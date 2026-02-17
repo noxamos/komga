@@ -62,14 +62,17 @@
           v-if="loaderSeries && loaderSeries.items.length !== 0"
           class="mb-4"
           :tick="loaderSeries.tick"
+          :can-expand="true"
+          :is-expanded="seriesExpanded"
           @scroll-changed="(percent) => scrollChanged(loaderSeries, percent)"
+          @expand-changed="(isExpanded) => seriesExpanded = isExpanded"
         >
           <template v-slot:prepend>
             <div class="title">{{ $tc('common.series', 2) }}</div>
           </template>
           <template v-slot:content>
             <item-browser :items="loaderSeries.items"
-                          nowrap
+                          :nowrap="!seriesExpanded"
                           :edit-function="isAdmin ? singleEditSeries : undefined"
                           :selected.sync="selectedSeries"
                           :selectable="selectedBooks.length === 0 && selectedCollections.length === 0 && selectedReadLists.length === 0"
@@ -82,7 +85,10 @@
           v-if="loaderBooks && loaderBooks.items.length !== 0"
           class="mb-4"
           :tick="loaderBooks.tick"
+          :can-expand="true"
+          :is-expanded="booksExpanded"
           @scroll-changed="(percent) => scrollChanged(loaderBooks, percent)"
+          @expand-changed="(isExpanded) => booksExpanded = isExpanded"
         >
           <template v-slot:prepend>
             <div class="title">{{ $t('common.books') }}</div>
@@ -90,7 +96,7 @@
           <template v-slot:content>
             <item-browser :items="loaderBooks.items"
                           :item-context="[ItemContext.SHOW_SERIES]"
-                          nowrap
+                          :nowrap="!booksExpanded"
                           :edit-function="isAdmin ? singleEditBook : undefined"
                           :selected.sync="selectedBooks"
                           :selectable="selectedSeries.length === 0 && selectedCollections.length === 0 && selectedReadLists.length === 0"
@@ -211,6 +217,8 @@ export default Vue.extend({
       selectedBooks: [] as BookDto[],
       selectedCollections: [] as CollectionDto[],
       selectedReadLists: [] as ReadListDto[],
+      seriesExpanded:false,
+      booksExpanded:false,
     }
   },
   created() {
