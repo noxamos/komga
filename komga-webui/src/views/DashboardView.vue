@@ -60,7 +60,10 @@
           v-if="section.loader && section.loader.items.length !== 0"
           class="mb-4"
           :tick="section.loader.tick"
+          :can-expand="true"
+          :is-expanded="!!expandedSections[section.value]"
           @scroll-changed="(percent) => scrollChanged(section.loader, percent)"
+          @expand-changed="(isExpanded) => $set(expandedSections, section.value, isExpanded)"
         >
           <template v-slot:prepend>
             <div class="title">{{ $t(`dashboard.${section.value.toLowerCase()}`) }}</div>
@@ -69,7 +72,7 @@
             <item-browser v-if="section.type ===SectionType.BOOK"
                           :items="section.loader.items"
                           :item-context="section.itemContext"
-                          nowrap
+                          :nowrap="!expandedSections[section.value]"
                           :edit-function="isAdmin ? singleEditBook : undefined"
                           :selected.sync="selectedBooks"
                           :selectable="selectedSeries.length === 0"
@@ -78,7 +81,7 @@
             <item-browser v-if="section.type === SectionType.SERIES"
                           :items="section.loader.items"
                           :item-context="section.itemContext"
-                          nowrap
+                          :nowrap="!expandedSections[section.value]"
                           :edit-function="isAdmin ? singleEditSeries : undefined"
                           :selected.sync="selectedSeries"
                           :selectable="selectedBooks.length === 0"
@@ -203,6 +206,7 @@ export default Vue.extend({
       loaderRecentlyReadBooks: undefined as PageLoader<BookDto> | undefined,
       selectedSeries: [] as SeriesDto[],
       selectedBooks: [] as BookDto[],
+      expandedSections: {} as Record<string, boolean>,
     }
   },
   created() {
