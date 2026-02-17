@@ -9,15 +9,10 @@
              @click="doScroll('backward')">
         <rtl-icon icon="mdi-chevron-left" rtl="mdi-chevron-right"/>
       </v-btn>
-      <v-btn v-if="canExpand && isExpanded"
+      <v-btn v-if="canExpand"
              icon
-             @click="triggerCollapse()">
-        <rtl-icon icon="mdi-chevron-up" rtl="mdi-chevron-up"/>
-      </v-btn>
-      <v-btn v-if="canExpand && !isExpanded"
-             icon
-             @click="triggerExpand()">
-        <rtl-icon icon="mdi-chevron-down" rtl="mdi-chevron-down"/>
+             @click="$emit('expand-changed', !isExpanded)">
+        <v-icon>{{ isExpanded ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
       </v-btn>
       <v-btn icon
              :disabled="!canScrollForward"
@@ -118,12 +113,6 @@ export default Vue.extend({
           behavior: 'smooth',
         })
       }
-    },
-    triggerExpand() {
-      this.$emit('expand-changed', true)
-    },
-    triggerCollapse() {
-      this.$emit('expand-changed', false)
     },
   },
 })
